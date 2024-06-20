@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card, CardContent, Typography } from "@mui/material";
 import { getHeroImageUrl, Hero } from "@/lib/odota";
 import { AttributeImage } from "../AttributeImage";
@@ -23,7 +24,14 @@ export function HeroCard({ hero }: Readonly<{ hero: Hero }>) {
         }}
       >
         <AttributeImage width={30} height={30} attribute={hero.primary_attr} />
-        <Typography variant="body1" fontSize={18} fontWeight={600}>
+        <Typography
+          href={`/${hero.id}`}
+          component={Link}
+          variant="body1"
+          fontSize={18}
+          fontWeight={600}
+          color={(theme) => theme.palette.text.primary}
+        >
           {hero.localized_name}
         </Typography>
       </CardContent>

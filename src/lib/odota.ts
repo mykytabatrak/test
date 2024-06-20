@@ -1,15 +1,8 @@
 import { z } from "zod";
-
 const BASE_URL =
   "https://raw.githubusercontent.com/odota/dotaconstants/master/build";
 
-const HEROES_URL = `${BASE_URL}/heroes.json`;
-const HERO_LORE_URL = `${BASE_URL}/hero_lore.json`;
-const HERO_TO_ABILITIES_URL = `${BASE_URL}/hero_abilities.json`;
-const ABILITIES_URL = `${BASE_URL}/abilities.json`;
-
 export const Attributes = ["str", "agi", "int", "all"] as const;
-
 export type Attribute = (typeof Attributes)[number];
 
 export function isAttribute(attribute: string): attribute is Attribute {
@@ -17,7 +10,6 @@ export function isAttribute(attribute: string): attribute is Attribute {
 }
 
 export const AttackTypes = ["Melee", "Ranged"] as const;
-
 export type AttackType = (typeof AttackTypes)[number];
 
 export function isAttackType(attackType: string): attackType is AttackType {
@@ -37,11 +29,18 @@ export type Hero = z.infer<typeof Hero>;
 export const Heroes = z.record(z.string(), Hero);
 export type Heroes = z.infer<typeof Heroes>;
 
+const HEROES_URL = `${BASE_URL}/heroes.json`;
+
 export async function getHeroes() {
   const response = await fetch(HEROES_URL);
   const json = await response.json();
   const data = Heroes.parse(json);
   return data;
+}
+
+export async function getHero(id: string) {
+  const heroes = await getHeroes();
+  return heroes[id];
 }
 
 export async function getHeroList({
@@ -71,6 +70,66 @@ export async function getHeroList({
       : filteredByAttackType;
 
   return filteredByName;
+}
+
+const HeroesLore = z.record(z.string(), z.string());
+
+const HERO_LORE_URL = `${BASE_URL}/hero_lore.json`;
+
+export async function getHeroesLore() {
+  const response = await fetch(HERO_LORE_URL);
+  const json = await response.json();
+  const data = HeroesLore.parse(json);
+  return data;
+}
+
+export async function getHeroLore(id: string) {
+  const hero = await getHero(id);
+  const heroesLore = await getHeroesLore();
+  return heroesLore[hero.name.replace("npc_dota_hero_", "")];
+}
+
+const HeroesToAbilities = z.record(
+  z.string(),
+  z.object({
+    abilities: z.array(z.string()),
+  })
+);
+
+const HERO_TO_ABILITIES_URL = `${BASE_URL}/hero_abilities.json`;
+
+export async function getHeroesToAbilities() {
+  const response = await fetch(HERO_TO_ABILITIES_URL);
+  const json = await response.json();
+  const data = HeroesToAbilities.parse(json);
+  return data;
+}
+
+const Ability = z.object({
+  dname: z.string().optional(),
+  desc: z.string().optional(),
+  img: z.string().optional(),
+});
+export type Ability = z.infer<typeof Ability>;
+
+const Abilities = z.record(z.string(), Ability);
+
+const ABILITIES_URL = `${BASE_URL}/abilities.json`;
+
+export async function getAbilities() {
+  const response = await fetch(ABILITIES_URL);
+  const json = await response.json();
+  const data = Abilities.parse(json);
+  return data;
+}
+
+export async function getHeroAbilities(id: string) {
+  const hero = await getHero(id);
+  const heroesToAbilities = await getHeroesToAbilities();
+  const abilities = await getAbilities();
+  return heroesToAbilities[hero.name].abilities
+    .filter((value) => value !== "generic_hidden")
+    .map((abilityId) => abilities[abilityId]);
 }
 
 export function getHeroImageUrl(hero: z.infer<typeof Hero>) {

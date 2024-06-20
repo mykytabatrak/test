@@ -3,7 +3,7 @@ import { getQueryClient } from "@/lib/getQueryClient";
 import { heroesOptions } from "./query";
 import { AttackType, Attribute } from "@/lib/odota";
 
-export function HeroListHydrationBoundary({
+export function HeroListPreload({
   attributes,
   attackType,
   name,

@@ -1,5 +1,5 @@
 import { ReactNode, Suspense } from "react";
-import { Card, CardContent, Container, Typography } from "@mui/material";
+import { Card, Container, Typography } from "@mui/material";
 import {
   ATTACK_TYPE_KEY,
   ATTRIBUTE_KEY,
@@ -12,7 +12,7 @@ import { AttributeFilter } from "@/ui/HeroList/AttributeFilter";
 import { AttackTypeFilter } from "@/ui/HeroList/AttackTypeFilter";
 import { NameFilter } from "@/ui/HeroList/NameFilter";
 import { HeroList } from "@/ui/HeroList/HeroList.client";
-import { HeroListHydrationBoundary } from "@/ui/HeroList/HeroListHydrationBoundary";
+import { HeroListPreload } from "@/ui/HeroList/HeroListPreload";
 // import { HeroList } from "@/ui/HeroList/HeroList.server";
 
 export default function Home({
@@ -43,7 +43,7 @@ export default function Home({
           <AttackTypeFilter />
           <NameFilter />
         </FilterBar>
-        <HeroListHydrationBoundary
+        <HeroListPreload
           attributes={attributes}
           attackType={attackType}
           name={name}
@@ -55,7 +55,7 @@ export default function Home({
               name={name}
             />
           </Suspense>
-        </HeroListHydrationBoundary>
+        </HeroListPreload>
       </HeroListRoot>
     </Container>
   );
@@ -68,22 +68,18 @@ function FilterBar({ children }: Readonly<{ children: ReactNode }>) {
       sx={{
         mb: 4,
         borderRadius: 1,
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "1fr",
+          md: "1fr 1fr",
+          lg: "1fr 2fr 2fr 2fr",
+        },
+        alignItems: "center",
+        gap: 3,
+        p: 2,
       }}
     >
-      <CardContent
-        sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            md: "1fr 1fr",
-            lg: "1fr 2fr 2fr 2fr",
-          },
-          alignItems: "center",
-          gap: 3,
-        }}
-      >
-        {children}
-      </CardContent>
+      {children}
     </Card>
   );
 }
