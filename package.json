@@ -9,13 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.20",
+    "@mui/material-nextjs": "^5.15.11",
     "@tanstack/react-query": "^5.45.1",
+    "@tanstack/react-query-devtools": "^5.45.1",
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
+    "use-debounce": "^10.0.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -25,6 +29,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
+    "eslint-config-prettier": "^9.1.0",
     "typescript": "^5"
   }
 }
