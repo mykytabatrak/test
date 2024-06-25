@@ -55,17 +55,21 @@ export async function getHeroList({
   const heroes = await getHeroes();
   const heroesArray = Object.values(heroes);
 
+  const sortedArray = heroesArray.sort((a, b) => {
+    return a.localized_name.localeCompare(b.localized_name);
+  });
+  console.log(sortedArray);
   const filteredByAttributes =
     !!attributes && attributes.length !== 0
-      ? heroesArray.filter((hero) => attributes.includes(hero.primary_attr))
-      : heroesArray;
+      ? sortedArray.filter((hero) => attributes.includes(hero.primary_attr))
+      : sortedArray;
   const filteredByAttackType = !!attackType
     ? filteredByAttributes.filter((hero) => hero.attack_type === attackType)
     : filteredByAttributes;
   const filteredByName =
     !!name && name.length !== 0
       ? filteredByAttackType.filter((hero) => {
-          return hero.name.toLowerCase().includes(name.toLowerCase());
+          return hero.localized_name.toLowerCase().includes(name.toLowerCase());
         })
       : filteredByAttackType;
 
